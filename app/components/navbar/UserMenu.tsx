@@ -19,6 +19,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   const loginModal = useLoginModal();
 
   const toggleOpen = useCallback(() => setIsOpen((prev) => !prev), []);
+  console.log(currentUser);
 
   return (
     <div className="relative">
@@ -71,7 +72,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                 />
                 <MenuItem
                   onClick={() => {
-                    loginModal.onOpen();
+                    registerModal.onOpen();
                     setIsOpen(false);
                   }}
                   label="SignUp"

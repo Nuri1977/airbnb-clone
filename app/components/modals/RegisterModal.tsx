@@ -13,6 +13,7 @@ import { toast } from "react-hot-toast";
 import Button from "../Button";
 import { log } from "console";
 import useLoginModal from "@/app/hooks/useLoginModal";
+import { signIn } from "next-auth/react";
 
 const RegisterModal = () => {
   const registerModal = useRegisterModal();
@@ -88,13 +89,21 @@ const RegisterModal = () => {
         outline
         label="Continue with Google"
         icon={FcGoogle}
-        onAbort={() => {}}
+        onClick={() => signIn("google")}
       />
       <Button
         outline
         label="Continue with Github"
         icon={AiFillGithub}
-        onAbort={() => {}}
+        onClick={() => {
+          signIn("github")
+            .then((res) => {
+              toast.success(res?.error || "Logged in successfully");
+            })
+            .catch((err) => {
+              toast.error(err?.message || err || "Something went wrong");
+            });
+        }}
       />
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="flex flex-row item-center gap-2 justify-center">

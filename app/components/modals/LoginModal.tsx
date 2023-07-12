@@ -37,7 +37,6 @@ const LoginModal = () => {
     signIn("credentials", { ...data, redirect: false }).then((res) => {
       setIsLoading(false);
       if (res?.ok) {
-        console.log({ res });
         toast.success("Logged in successfully!");
         router.refresh();
         loginModal.onClose();

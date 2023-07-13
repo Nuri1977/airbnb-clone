@@ -1,10 +1,15 @@
 "use client";
+import { User } from "@prisma/client";
 import Image from "next/image";
 
-const Avatar = () => {
+interface AvatarProps {
+  currentUser?: User | null;
+}
+
+const Avatar: React.FC<AvatarProps> = ({ currentUser }) => {
   return (
     <Image
-      src="/images/placeholder.jpg"
+      src={currentUser?.image || "/images/placeholder.jpg"}
       width={30}
       height={30}
       className="rounded-full"

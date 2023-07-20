@@ -8,7 +8,7 @@ import { User } from "@prisma/client";
 
 interface IUseFavorite {
   listingId: string;
-  currentUser?: User | null | any;
+  currentUser?: User | null;
 }
 
 const useFavorite = ({ listingId, currentUser }: IUseFavorite) => {

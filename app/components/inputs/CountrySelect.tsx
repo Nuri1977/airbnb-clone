@@ -1,13 +1,16 @@
-import useCountries from "@/app/hooks/useCountries";
+"use client";
+
 import Select from "react-select";
 
-interface CountrySelectValue {
-  value: string;
+import useCountries from "@/app/hooks/useCountries";
+
+export type CountrySelectValue = {
   flag: string;
   label: string;
   latlng: number[];
   region: string;
-}
+  value: string;
+};
 
 interface CountrySelectProps {
   value?: CountrySelectValue;
@@ -16,16 +19,20 @@ interface CountrySelectProps {
 
 const CountrySelect: React.FC<CountrySelectProps> = ({ value, onChange }) => {
   const { getAll } = useCountries();
+
   return (
     <div>
       <Select
-        placeholder="Anywere"
+        placeholder="Anywhere"
         isClearable
         options={getAll()}
         value={value}
         onChange={(value) => onChange(value as CountrySelectValue)}
         formatOptionLabel={(option: any) => (
-          <div className="flex items-center gap-3">
+          <div
+            className="
+          flex flex-row items-center gap-3"
+          >
             <div>{option.flag}</div>
             <div>
               {option.label},
@@ -43,8 +50,8 @@ const CountrySelect: React.FC<CountrySelectProps> = ({ value, onChange }) => {
           borderRadius: 6,
           colors: {
             ...theme.colors,
-            primary25: "#ffe4e6",
             primary: "black",
+            primary25: "#ffe4e6",
           },
         })}
       />

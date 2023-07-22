@@ -9,22 +9,22 @@ import useLoginModal from "@/app/hooks/useLoginModal";
 import { signOut } from "next-auth/react";
 import { User } from "@prisma/client";
 import useRentModal from "@/app/hooks/useRentModal";
+import { useRouter } from "next/navigation";
 
 interface UserMenuProps {
   currentUser?: User | null;
 }
 
 const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
   const rentModal = useRentModal();
 
   const toggleOpen = useCallback(() => setIsOpen((prev) => !prev), []);
-  console.log(currentUser);
 
   const onRent = useCallback(() => {
-    console.log(currentUser);
     if (!currentUser) {
       return loginModal.onOpen();
     }
@@ -53,13 +53,25 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
       </div>
       {isOpen && (
         <div className="absolute right-0 top-12 overflow-hidden rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white text-sm">
-          <div className="flex flex-col cursor-pointer">
+          <div className="flex flex-col cursor-pointer" onClick={toggleOpen}>
             {currentUser ? (
               <>
-                <MenuItem onClick={() => {}} label="My trips" />
-                <MenuItem onClick={() => {}} label="My favorites" />
-                <MenuItem onClick={() => {}} label="My reservations" />
-                <MenuItem onClick={() => {}} label="My properties" />
+                <MenuItem
+                  onClick={() => router.push("/trips")}
+                  label="My trips"
+                />
+                <MenuItem
+                  onClick={() => router.push("/favorites")}
+                  label="My favorites"
+                />
+                <MenuItem
+                  onClick={() => router.push("/reservations")}
+                  label="My reservations"
+                />
+                <MenuItem
+                  onClick={() => router.push("/properties")}
+                  label="My properties"
+                />
                 <MenuItem
                   onClick={() => rentModal.onOpen()}
                   label="Airbnb my home"
@@ -69,7 +81,6 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                   onClick={() => {
                     signOut().then(() => {
                       loginModal.onClose();
-                      setIsOpen(false);
                     });
                   }}
                   label="Log out"
@@ -80,7 +91,6 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                 <MenuItem
                   onClick={() => {
                     loginModal.onOpen();
-                    setIsOpen(false);
                   }}
                   label="Login"
                 />

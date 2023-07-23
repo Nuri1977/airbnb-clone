@@ -7,6 +7,7 @@ import UserMenu from "./UserMenu";
 import Search from "./Search";
 import { User } from "@prisma/client";
 import Categories from "./Categories";
+import SuspenseSearchParams from "../SuspenseSearchParams";
 
 interface NavbarProps {
   currentUser?: User | null;
@@ -24,7 +25,9 @@ const Navbar: React.FC<NavbarProps> = ({ currentUser }) => {
           </div>
         </Container>
       </div>
-      <Categories />
+      <SuspenseSearchParams>
+        <Categories />
+      </SuspenseSearchParams>
     </nav>
   );
 };

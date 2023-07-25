@@ -102,8 +102,9 @@ const Categories = () => {
   const category = params?.get("category");
   const pathname = usePathname();
   const isMainPage = pathname === "/";
+  const isSearchPage = pathname.startsWith("/search");
 
-  if (!isMainPage) {
+  if (!isMainPage && !isSearchPage) {
     return null;
   }
 

@@ -31,19 +31,21 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
       category: label,
     };
 
+    let pageUrl = "/search";
+
     if (params?.get("category") === label) {
       delete updatedQuery.category;
     }
 
     const url = qs.stringifyUrl(
       {
-        url: "/",
+        url: "/search",
         query: updatedQuery,
       },
       { skipNull: true }
     );
-
     router.push(url);
+    router.refresh();
   }, [label, router, params]);
 
   return (

@@ -12,6 +12,8 @@ interface FilterPageProps {
   searchParams: IListingsParams;
 }
 
+const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+
 async function getListingsApi(searchParams: FilterPageProps) {
   const { searchParams: listingsParams } = searchParams;
 
@@ -22,7 +24,7 @@ async function getListingsApi(searchParams: FilterPageProps) {
     return [];
   }
 
-  const res = await fetch(`http://localhost:3000/api/search?${searchString}`, {
+  const res = await fetch(`${serverUrl}/api/search?${searchString}`, {
     cache: "no-store",
   });
   const listings = await res.json();

@@ -187,8 +187,6 @@ const RentModal = () => {
           title="Where is your place located?"
           subtitle="Help guests find you!"
         />
-        <h5>{editData?.locationValue}</h5>
-        <h5>{JSON.stringify(location)}</h5>
         <CountrySelect
           value={location}
           onChange={(value) => setCustomValue("location", value)}

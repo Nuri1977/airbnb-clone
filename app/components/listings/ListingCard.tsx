@@ -11,6 +11,7 @@ import HeartButton from "../HeartButton";
 import Button from "../Button";
 import ClientOnly from "../ClientOnly";
 import { Listing, Reservation, User } from "@prisma/client";
+import useRentModal from "@/app/hooks/useRentModal";
 
 interface ListingCardProps {
   data: Listing;
@@ -33,6 +34,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
 }) => {
   const router = useRouter();
   const { getByValue } = useCountries();
+  const rentModal = useRentModal();
 
   const location = getByValue(data.locationValue);
 
@@ -116,12 +118,24 @@ const ListingCard: React.FC<ListingCardProps> = ({
           {!reservation && <div className="font-light">night</div>}
         </div>
         {onAction && actionLabel && (
-          <Button
-            disabled={disabled}
-            small
-            label={actionLabel}
-            onClick={handleCancel}
-          />
+          <>
+            <Button
+              disabled={disabled}
+              small
+              label={actionLabel}
+              onClick={handleCancel}
+            />
+            <Button
+              disabled={disabled}
+              small
+              label={"Edit property"}
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("data", data);
+                rentModal.onOpenEdit(data);
+              }}
+            />
+          </>
         )}
       </div>
     </div>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Modal from "./Modal";
 import useRentModal from "@/app/hooks/useRentModal";
 import Heading from "../Heading";
@@ -14,6 +14,7 @@ import Input from "../inputs/Input";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import useCountries from "@/app/hooks/useCountries";
 
 enum STEPS {
   CATEGORY = 0,
@@ -26,9 +27,11 @@ enum STEPS {
 
 const RentModal = () => {
   const rentModal = useRentModal();
+  const { getByValue } = useCountries();
   const router = useRouter();
   const [step, setStep] = useState(STEPS.CATEGORY);
   const [isLoading, setIsLoading] = useState(false);
+  const { isEdit, data: editData } = rentModal;
 
   const {
     register,
@@ -39,6 +42,7 @@ const RentModal = () => {
     reset,
   } = useForm<FieldValues>({
     defaultValues: {
+      id: "",
       category: "",
       location: null,
       guestCount: 1,
@@ -57,6 +61,23 @@ const RentModal = () => {
   const bathroomCount = watch("bathroomCount");
   const roomCount = watch("roomCount");
   const imageSrc = watch("imageSrc");
+
+  useEffect(() => {
+    if (isEdit) {
+      const locationValue = getByValue(editData?.locationValue || "");
+      reset({
+        category: editData?.category,
+        location: locationValue,
+        guestCount: editData?.guestCount,
+        roomCount: editData?.roomCount,
+        bathroomCount: editData?.bathroomCount,
+        imageSrc: editData?.imageSrc,
+        price: editData?.price,
+        title: editData?.title,
+        description: editData?.description,
+      });
+    }
+  }, [rentModal.isOpen]);
 
   const CountryMap = useMemo(
     () =>
@@ -84,21 +105,39 @@ const RentModal = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     if (step !== STEPS.PRICE) return onNext();
-
     setIsLoading(true);
-    axios
-      .post("/api/listings", data)
-      .then(() => {
-        toast.success("Listing created successfully");
-        router.refresh();
-        reset();
-        setStep(STEPS.CATEGORY);
-        rentModal.onClose();
-      })
-      .catch((error) => {
-        toast.error(error?.message || "Something went wrong");
-      })
-      .finally(() => setIsLoading(false));
+    if (isEdit) {
+      let newData = { ...data };
+      newData.locationValue = location.value;
+      delete newData.location;
+      axios
+        .put(`/api/listings/${editData?.id}`, newData)
+        .then(() => {
+          toast.success("Listing updated successfully");
+          router.refresh();
+          reset();
+          setStep(STEPS.CATEGORY);
+          rentModal.onClose();
+        })
+        .catch((error) => {
+          toast.error(error?.message || "Something went wrong");
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      axios
+        .post("/api/listings", data)
+        .then(() => {
+          toast.success("Listing created successfully");
+          router.refresh();
+          reset();
+          setStep(STEPS.CATEGORY);
+          rentModal.onClose();
+        })
+        .catch((error) => {
+          toast.error(error?.message || "Something went wrong");
+        })
+        .finally(() => setIsLoading(false));
+    }
   };
 
   const actionLabel = useMemo(() => {
@@ -148,6 +187,8 @@ const RentModal = () => {
           title="Where is your place located?"
           subtitle="Help guests find you!"
         />
+        <h5>{editData?.locationValue}</h5>
+        <h5>{JSON.stringify(location)}</h5>
         <CountrySelect
           value={location}
           onChange={(value) => setCustomValue("location", value)}
